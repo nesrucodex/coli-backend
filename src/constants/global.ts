@@ -1,8 +1,24 @@
+import { IMemberStatus, INotificationTypes } from "../types/global";
 
 export const TODO_STATUS = {
-    CREATED: "CREATED",
-    TODO: "TODO",
-    IN_PROGRESS: "IN PROGRESS",
-    COMPLETED: "COMPLETED",
-    APPROVED: "APPROVED",
+  CREATED: "CREATED",
+  TODO: "TODO",
+  IN_PROGRESS: "IN PROGRESS",
+  COMPLETED: "COMPLETED",
+  APPROVED: "APPROVED",
+};
+export const MEMBER_STATUS: { [key: string]: IMemberStatus } = {
+  MEMBER: "MEMBER",
+  PENDING: "PENDING",
+  BLOCK: "BLOCK",
+};
+
+Object.freeze(MEMBER_STATUS);
+
+export const NOTIFICATION_TYPES = {
+  MEMBER_REQUEST: "MEMBER_REQUEST",
+  TODO_COMMENT_ADDED: "TODO_COMMENT_ADDED",
+  TEAM_CHAT_MESSAGE: "TEAM_CHAT_MESSAGE",
+  TODO_STATUS_CHANGED: "TODO_STATUS_CHANGED",
+  GENERAL: "GENERAL",
 };

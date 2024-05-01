@@ -8,7 +8,7 @@ export default (
   res: Response,
   next: NextFunction
 ) => {
-  console.log(err?.message);
+  console.log(err);
 
   if (err instanceof RouteError)
     return res

@@ -1,11 +1,13 @@
 import { Router } from "express";
 import {
-  addMember,
+  requestMember,
   createTeam,
   getTeam,
   getTeams,
   removeMember,
-  updateTodosOrderingController,
+  updateMemberStatus,
+  updateTeam,
+  deleteTeam,
 } from "../controllers/team.controller";
 import { authenticationMiddleWare } from "../middleware/auth";
 import { teamProfileUploader } from "../middleware/multer";
@@ -19,16 +21,27 @@ router
     authenticationMiddleWare,
     teamProfileUploader.single("profile"),
     createTeam
-  );
-router
-  .route("/todos/:teamId")
-  .patch(authenticationMiddleWare, updateTodosOrderingController);
+  )
+  .patch(authenticationMiddleWare);
+router.route("/dnd/:teamId");
 
-router.route("/members").post(addMember);
+router.route("/members").post(authenticationMiddleWare, requestMember);
 router
   .route("/members/:id/:memberId")
   .delete(authenticationMiddleWare, removeMember);
 
-router.route("/:id").get(authenticationMiddleWare, getTeam);
+router
+  .route("/:id")
+  .get(authenticationMiddleWare, getTeam)
+  .patch(
+    authenticationMiddleWare,
+    teamProfileUploader.single("profile"),
+    updateTeam
+  )
+  .delete(authenticationMiddleWare, deleteTeam);
+
+router
+  .route("/members/status")
+  .patch(authenticationMiddleWare, updateMemberStatus);
 
 export default router;

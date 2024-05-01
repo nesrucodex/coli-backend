@@ -15,7 +15,7 @@ export const createTodoController = asyncWrapper(
 
     const todo = await Todo.create({ content, team: teamId });
 
-    team.todos.push(todo);
+    team.unassignedTodos.push(todo);
     await team.save();
 
     return res.status(StatusCodes.OK).json({
@@ -53,13 +53,23 @@ export const removeTodoController = asyncWrapper(
     const team = await Team.findById(teamId);
 
     if (!team) throw new BadRequest("Invalid team id to delete todo");
+
     const response = await Todo.findByIdAndDelete(todoId);
     if (!response) throw new BadRequest("Invalid todo id to delete Todo");
 
-    team.todos = team.todos.filter(
+    // Remove the todo from unassignedTodos
+    team.unassignedTodos = team.unassignedTodos.filter(
       (todo) => todo._id.toString() !== todoId.toString()
     ) as Types.DocumentArray<ITodo>;
 
+    // Remove the todo from each member's todos
+    team.members.forEach((member) => {
+      member.todos = member.todos.filter(
+        (todo) => todo._id.toString() !== todoId.toString()
+      ) as Types.DocumentArray<ITodo>;
+    });
+
+    // Save the updated team document
     await team.save();
 
     return res.status(StatusCodes.OK).json({
